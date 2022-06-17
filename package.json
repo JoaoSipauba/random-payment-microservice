@@ -1,0 +1,17 @@
+{
+  "name": "random-payment-microservice",
+  "version": "1.0.0",
+  "description": "monorepo com intuito de aprender sobre mensageria com rabbitmq e node",
+  "main": "index.js",
+  "scripts": {
+    "mail": "node services/mail.js",
+    "payment": "node services/payment.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "JoaoSipauba",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.0",
+    "nodemailer": "^6.7.5"
+  }
+}
