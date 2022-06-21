@@ -1,44 +1,41 @@
+const express = require('express');
 var amqp = require('amqplib/callback_api');
 
-function sendMensage(channel, queue) {
-  const now = new Date()
+const app = express();
 
-  var msg = {
-    from: '<joaosipauba@hotmail.com>',
-    to: 'CROWOFCODE@gmail.com',
-    subject: 'Testing RabbitMQ with MicroServices',
-    text: 'This is a automatic message from RabbitMQ with MicroServices. Do not repply',
-    html: "<b>Hello from microservices</b>",
-  };
+app.use(express.json());
 
-  msg = JSON.stringify(msg);
+const router = express.Router();
 
-  channel.sendToQueue(queue, Buffer.from(msg));
-  console.log(`${now.toUTCString()} - send message`);
-}
+router.post('/payment', (req, res) => {
+  const { to, subject, text, html } = req.body;
 
-amqp.connect('amqp://localhost', function(error0, connection) {
-    if (error0) {
-        throw error0;
-      }
-      
+  amqp.connect('amqp://localhost', function(error0, connection) {
     connection.createChannel(function(error1, channel) {
-        if (error1) {
-            throw error1;
-          }
-          
-        const queue = 'mail-queue';
-    
-        channel.assertQueue(queue, {
-          durable: true
-        });
-        
-        sendMensage(channel, queue)
-        
-        setTimeout(function() {
-          connection.close();
-          process.exit(0)
-          }, 500);
-    });
+      const queue = 'mail-queue';
+  
+      channel.assertQueue(queue, {
+        durable: true
+      });
+      
+      const now = new Date()
 
+      var msg = {
+        from: '<joaosipauba@hotmail.com>',
+        to,
+        subject,
+        text,
+        html,
+      };
+
+      msg = JSON.stringify(msg);
+
+      channel.sendToQueue(queue, Buffer.from(msg));
+      res.status(200).send(`${now.toUTCString()} - message sent to queue`);
+    });
+  });
 });
+
+app.use(router);
+
+app.listen(3333, () => console.log('Service running on port 3333'));
