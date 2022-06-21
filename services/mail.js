@@ -7,8 +7,8 @@ var transporter = nodemailer.createTransport({
     secure: true,
     service: "Outlook365",
     auth: {
-        user: "joaosipauba@hotmail.com",
-        pass: "amominhamae29",
+        user: "",
+        pass: "",
     },
     tls: {
         ciphers:'SSLv3'
